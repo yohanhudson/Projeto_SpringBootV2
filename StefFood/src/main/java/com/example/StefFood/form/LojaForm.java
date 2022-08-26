@@ -3,6 +3,7 @@ package com.example.StefFood.form;
 
 import com.example.StefFood.modelo.Loja;
 import com.example.StefFood.repository.LojaRepository;
+import com.example.StefFood.service.LojaService;
 import org.hibernate.validator.constraints.Length;
 
 
@@ -46,8 +47,8 @@ public class LojaForm {
         this.cnpj = cnpj;
     }
 
-    public Loja converter(LojaRepository lojaRepository) {
-        Loja loja = lojaRepository.findByNome(nome);
+    public Loja converter(LojaService lojaService) {
+        Loja loja = lojaService.findByNome(nome);
         return new Loja(nome, endereco, cnpj);
     }
 }

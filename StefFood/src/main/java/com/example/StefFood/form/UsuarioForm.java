@@ -4,6 +4,7 @@ package com.example.StefFood.form;
 
 import com.example.StefFood.modelo.Usuario;
 import com.example.StefFood.repository.UsuarioRepository;
+import com.example.StefFood.service.UsuarioService;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
@@ -42,8 +43,8 @@ public class UsuarioForm {
         this.senha = senha;
     }
 
-    public Usuario converter(UsuarioRepository usuarioRepository) {
-        Usuario usuario = usuarioRepository.findByNome(nome);
+    public Usuario converter(UsuarioService usuarioService) {
+        Usuario usuario = usuarioService.findByNome(nome);
         return new Usuario(nome, email, senha);
     }
 }

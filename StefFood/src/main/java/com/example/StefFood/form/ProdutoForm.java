@@ -3,6 +3,8 @@ package com.example.StefFood.form;
 import com.example.StefFood.modelo.Loja;
 import com.example.StefFood.modelo.Produto;
 import com.example.StefFood.repository.LojaRepository;
+import com.example.StefFood.service.LojaService;
+import com.example.StefFood.service.ProdutoService;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
@@ -54,8 +56,8 @@ public class ProdutoForm {
         this.nomeLoja = nomeLoja;
     }
 
-    public Produto converter(LojaRepository lojaRepository) {
-        Loja loja = lojaRepository.findByNome(nomeLoja);
+    public Produto converter(LojaService lojaService) {
+        Loja loja = lojaService.findByNome(nomeLoja);
         return new Produto(nome, descricao, valor, loja);
     }
 }

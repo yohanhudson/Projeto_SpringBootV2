@@ -1,12 +1,13 @@
 package com.example.StefFood.controller;
 
 import com.example.StefFood.dto.UsuarioDto;
-import com.example.StefFood.form.AtualizarCliente;
+import com.example.StefFood.form.AtualizarUsuario;
 import com.example.StefFood.form.UsuarioForm;
 import com.example.StefFood.modelo.Usuario;
-import com.example.StefFood.repository.UsuarioRepository;
+import com.example.StefFood.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -20,19 +21,20 @@ import java.util.List;
 public class UsuarioController {
 
     @Autowired
-    public UsuarioRepository usuarioRepository;
+    private UsuarioService usuarioService;
 
     @GetMapping
     public List<UsuarioDto> lista() {
-        List<Usuario> usuarios = usuarioRepository.findAll();
+        List<Usuario> usuarios = usuarioService.findAll();
 
         return UsuarioDto.converter(usuarios);
     }
 
     @PostMapping
     public ResponseEntity<UsuarioDto> cadastrar(@RequestBody @Valid UsuarioForm form, UriComponentsBuilder uriBuilder) {
-        Usuario usuario = form.converter(usuarioRepository);
-        usuarioRepository.save(usuario);
+        form.setSenha(new BCryptPasswordEncoder().encode(form.getSenha()));
+        Usuario usuario = form.converter(usuarioService);
+        usuarioService.save(usuario);
 
         URI uri = uriBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getId()).toUri();
         return ResponseEntity.created(uri).body(new UsuarioDto(usuario));
@@ -41,15 +43,15 @@ public class UsuarioController {
     @GetMapping("/{id}")
     @Transactional
     public UsuarioDto detalhar(@PathVariable Long id) {
-        Usuario usuario = usuarioRepository.getOne(id);
+        Usuario usuario = usuarioService.findById(id);
 
         return new UsuarioDto(usuario);
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<UsuarioDto> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizarCliente form) {
-        Usuario usuario = form.atualizar(id, usuarioRepository);
+    public ResponseEntity<UsuarioDto> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizarUsuario form) {
+        Usuario usuario = form.atualizar(id, usuarioService);
 
         return ResponseEntity.ok(new UsuarioDto(usuario));
     }
@@ -57,7 +59,7 @@ public class UsuarioController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<?> remover(@PathVariable Long id) {
-        usuarioRepository.deleteById(id);
+        usuarioService.deleteById(id);
 
         return ResponseEntity.ok("Cliente deletada com sucesso");
     }

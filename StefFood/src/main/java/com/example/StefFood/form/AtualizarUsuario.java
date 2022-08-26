@@ -2,12 +2,12 @@ package com.example.StefFood.form;
 
 
 import com.example.StefFood.modelo.Usuario;
-import com.example.StefFood.repository.UsuarioRepository;
+import com.example.StefFood.service.UsuarioService;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 
-public class AtualizarCliente {
+public class AtualizarUsuario {
     @NotNull @Length(min = 5)
     private String nome;
     @NotNull @Length(min = 5)
@@ -40,8 +40,8 @@ public class AtualizarCliente {
         this.senha = senha;
     }
 
-    public Usuario atualizar(Long id, UsuarioRepository usuarioRepository) {
-        Usuario usuario = usuarioRepository.getOne(id);
+    public Usuario atualizar(Long id, UsuarioService usuarioService) {
+        Usuario usuario = usuarioService.findById(id);
 
         usuario.setNome(this.nome);
         usuario.setEmail(this.email);
